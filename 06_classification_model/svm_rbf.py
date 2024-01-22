@@ -1,6 +1,6 @@
 """
 支持向量机：找到最大间隔超平面
-多项式核函数
+高斯核函数
 """
 import pandas as pd
 import numpy as np
@@ -24,7 +24,7 @@ y = data.iloc[:, -1]
 x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, random_state=7, test_size=0.2, stratify=y)
 
 # 构建模型
-model = svm.SVC(kernel='poly', degree=4)
+model = svm.SVC(kernel='rbf', gamma=0.1, C=1.0)  # gamma概率密度标准差；C惩罚系数，正则化的强度与C成反比，L2正则化
 # 训练模型
 model.fit(x_train, y_train)
 # 预测
@@ -34,14 +34,13 @@ print(metrics.classification_report(y_test, pred_y))
 """
 precision    recall  f1-score   support
 
-           0       0.86      0.83      0.85        30
-           1       0.84      0.87      0.85        30
+           0       0.90      0.93      0.92        30
+           1       0.93      0.90      0.92        30
 
-    accuracy                           0.85        60
-   macro avg       0.85      0.85      0.85        60
-weighted avg       0.85      0.85      0.85        60
+    accuracy                           0.92        60
+   macro avg       0.92      0.92      0.92        60
+weighted avg       0.92      0.92      0.92        60
 """
-
 
 # 暴力绘制分类边界
 # 1.将x1的最小值到x1的最大值拆分200个数
