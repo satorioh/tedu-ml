@@ -32,9 +32,9 @@ ret, binary = cv.threshold(res, 90, 255, cv.THRESH_BINARY)
 cv.imshow('binary', binary)
 
 # 裁剪图片，去掉边框
-# h, w = binary.shape
-# crop_binary = binary[7:h-7, 7:w-7]  # 去掉上下左右各10个像素
-# cv.imshow('crop_binary', crop_binary)
+h, w = binary.shape
+crop_binary = binary[10:h-10, 10:w-10]  # 去掉上下左右各10个像素
+cv.imshow('crop_binary', crop_binary)
 
 # 查找轮廓
 contours, hierarchy = cv.findContours(binary, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
