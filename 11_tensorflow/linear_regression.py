@@ -11,27 +11,28 @@ y = tf.matmul(x, [[2.0]]) + 5.0  # y_true数据
 # 2. 构建线性模型
 weight = tf.Variable(tf.random.normal([1, 1]))
 bias = tf.Variable(0.0)
-pred_y = tf.matmul(x, weight) + bias
+
 
 # 3. 构建损失函数(mse)
-loss = tf.reduce_mean(tf.square(y - pred_y))
+def compute_loss():
+    pred_y = tf.matmul(x, weight) + bias
+    return tf.reduce_mean(tf.square(y - pred_y))
+
 
 # 4. 梯度下降优化器
-train_op = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=0.1).minimize(loss)
+optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
+
 # 定义收集损失函数
-tf.summary.scalar("loss", loss)
-merged = tf.summary.merge_all()
+summary_writer = tf.summary.create_file_writer('./logs')
 
 # 5. 训练模型
-with tf.compat.v1.Session() as sess:
-    sess.run(tf.compat.v1.global_variables_initializer())
-    print(f"weight: {weight.eval()}, bias: {bias.eval()}")
+for i in range(500):
+    with tf.GradientTape() as tape:
+        loss = compute_loss()
+    grads = tape.gradient(loss, [weight, bias])
+    optimizer.apply_gradients(zip(grads, [weight, bias]))
+    with summary_writer.as_default():
+        tf.summary.scalar('loss', loss, step=i)
+    print(f"step: {i}, weight: {weight.numpy()}, bias: {bias.numpy()}, loss: {loss.numpy()}")
 
-    fw = tf.summary.FileWriter("../logs", graph=sess.graph)
-    for i in range(500):
-        sess.run(train_op)
-        # 执行一次梯度下降，收集一次损失值
-        summary = sess.run(merged)
-        # 将损失值写入事件文件
-        fw.add_summary(summary, i)
-        print(f"step: {i}, weight: {weight.eval()}, bias: {bias.eval()}, loss: {loss.eval()}")
+summary_writer.flush()

@@ -20,9 +20,9 @@ data = tf.constant([1, 2, 3, 4, 5, 6, 7, 8, 9])
 ids = tf.constant([0, 0, 0, 1, 1, 1, 2, 2, 2])
 segment_sum = tf.math.segment_sum(data, ids)
 
-with tf.compat.v1.Session() as sess:
-    print(sess.run(add))  # [[2. 4.][6. 8.]]
-    print(sess.run(matmul))  # [[ 7. 10.][15. 22.]]
-    print(sess.run(log))  # [[0.        0.6931472][1.0986123 1.3862944]]
-    print(sess.run(reduce_sum))  # [3. 7.]
-    print(sess.run(segment_sum))  # [6 15 24]
+
+print(add.numpy())  # [[2. 4.][6. 8.]]
+print(matmul.numpy())  # [[ 7. 10.][15. 22.]]
+print(log.numpy())  # [[0.        0.6931472][1.0986123 1.3862944]]
+print(reduce_sum.numpy())  # [3. 7.]
+print(segment_sum.numpy())  # [6 15 24]
