@@ -4,6 +4,9 @@ from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.metrics import Mean, CategoricalAccuracy
 
+# 显示可用的GPU
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
 # Load the data
 mnist = tf.keras.datasets.mnist
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data(path='mnist.npz')
@@ -55,7 +58,8 @@ batch_size = 32
 train_data = train_data.shuffle(60000).batch(batch_size)
 
 # Training loop
-for epoch in range(100):
-    for (images, labels) in train_data:
-        train_step(images, labels)
-    print('Epoch:', epoch, 'Mean Loss:', train_loss.result().numpy(), 'Accuracy:', train_accuracy.result().numpy())
+with tf.device('/GPU:0'):
+    for epoch in range(100):
+        for (images, labels) in train_data:
+            train_step(images, labels)
+        print('Epoch:', epoch, 'Mean Loss:', train_loss.result().numpy(), 'Accuracy:', train_accuracy.result().numpy())
