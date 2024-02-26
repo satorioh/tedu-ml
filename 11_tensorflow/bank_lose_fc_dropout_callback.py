@@ -1,7 +1,7 @@
 """
 银行客户流失分类问题：
 标签分类不平衡
-全连接网络
+深层全连接网络
 """
 import numpy as np  # 导入NumPy数学工具箱
 import pandas as pd  # 导入Pandas数据处理工具箱
@@ -10,10 +10,12 @@ import seaborn as sns  # 导入seaborn画图工具箱
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler  # 导入特征缩放器
-from sklearn.metrics import classification_report  # 导入分类报告
+from sklearn.metrics import classification_report
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
-df_bank = pd.read_csv("../data_test/BankCustomer.csv")  # 读取文件
-df_bank.head()  # 显示文件前5行
+# 读取数据
+df_bank = pd.read_csv('../data_test/BankCustomer.csv')
+df_bank.head()
 
 # 显示不同特征的分布情况
 features = ['City', 'Gender', 'Age', 'Tenure',
@@ -53,6 +55,13 @@ X_test = sc.transform(X_test)  # 训练集结果应用于测试集
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(units=12, activation='relu'),  # 输入层
     tf.keras.layers.Dense(units=24, activation='relu'),  # 隐层
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(units=48, activation='relu'),  # 隐层
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(units=96, activation='relu'),  # 隐层
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(units=192, activation='relu'),  # 隐层
+    tf.keras.layers.Dropout(0.5),
     tf.keras.layers.Dense(units=1, activation='sigmoid')  # 输出层，二分类
 ])
 
@@ -61,15 +70,12 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-# 训练模型
 history = model.fit(X_train, y_train,  # 指定训练集
                     epochs=100,  # 指定训练的轮次
                     batch_size=64,  # 指定数据批量
                     validation_data=(X_test, y_test))  # 指定验证集,这里为了简化模型，直接用测试集数据进行验证
 
 
-# 绘制训练过程中的损失和准确率
-# 这段代码参考《Python深度学习》一书中的学习曲线的实现
 def show_history(history):  # 显示训练过程中的学习曲线
     loss = history.history['loss']
     val_loss = history.history['val_loss']
@@ -109,3 +115,16 @@ def show_report(X_test, y_test, y_pred):  # 定义一个函数显示分类报告
 
 
 show_report(X_test, y_test, y_pred)
+
+# 导入回调功能
+
+# 设定要回调的功能
+early_stop = EarlyStopping(monitor='val_loss', patience=20, verbose=1, restore_best_weights=True)
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=10, verbose=1, min_lr=1e-7)
+model_ckpt = ModelCheckpoint(filepath='./ckpt/model.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='max')
+callbacks = [early_stop, reduce_lr, model_ckpt]  # 设定回调
+# history = ann.fit(X_train, y_train,  # 指定训练集
+#                   batch_size=128,　  # 指定批量大小
+# validation_data = (X_test, y_test),  # 指定验证集
+# epochs = 100,　  # 指定轮次
+# callbacks = callbacks)  # 指定回调功能
