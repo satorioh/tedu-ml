@@ -15,7 +15,6 @@ embarked：登船地点
 import numpy as np
 import pandas as pd
 import sklearn.preprocessing as preprocessing
-from sklearn import ensemble
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, ExtraTreesClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -25,8 +24,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV, cross_val_score, StratifiedKFold
 
-train_data = pd.read_csv("../data_test/titanic/train.csv")
-test_data = pd.read_csv("../data_test/titanic/test.csv")
+train_data = pd.read_csv("../../data_test/titanic/train.csv")
+test_data = pd.read_csv("../../data_test/titanic/test.csv")
 full_data = pd.concat([train_data, test_data], ignore_index=True)
 
 # 1.填充缺失值
@@ -99,7 +98,7 @@ train_x = train_new_data.drop(['Survived'], axis=1)
 train_y = train_new_data['Survived']
 test_x = test_new_data.drop(['Survived'], axis=1)
 
-# 对Sex和Embarked进行one-hot编码
+# 进行one-hot编码
 # 创建OneHotEncoder实例
 encoder = preprocessing.OneHotEncoder(sparse_output=False)
 # 定义需要进行独热编码的列
@@ -116,8 +115,8 @@ column_transformer = ColumnTransformer(
 train_x_encoded = column_transformer.fit_transform(train_x)
 test_x_encoded = column_transformer.transform(test_x)
 
-# # 4.模型训练
-# # 设置kfold，交叉采样法拆分数据集
+# 4.模型训练
+# 设置kfold，交叉采样法拆分数据集
 kfold = StratifiedKFold(n_splits=10)
 
 # 汇总不同模型算法
@@ -161,7 +160,10 @@ print(f"GradientBoostingClassifier模型得分：{model_GBC.best_score_}")  # 0.
 print(
     f"GradientBoostingClassifier最优参数：{model_GBC.best_params_}")  # {'learning_rate': 0.1, 'loss': 'log_loss', 'max_depth': 4, 'max_features': 0.3, 'min_samples_leaf': 100, 'n_estimators': 300}
 
-# best_model = model_GBC.best_estimator_
+# GradientBoostingClassifier模型得分：0.826067415730337
+# GradientBoostingClassifier最优参数：{'learning_rate': 0.1, 'loss': 'log_loss', 'max_depth': 8, 'max_features': 0.3, 'min_samples_leaf': 100, 'n_estimators': 300}
+
+best_model = model_GBC.best_estimator_
 pred_test_y = model_GBC.predict(test_x_encoded)
 
 output = pd.DataFrame(
