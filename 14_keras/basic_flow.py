@@ -39,6 +39,9 @@ model.fit(
     validation_data=(val_inputs, val_targets)
 )
 
-# 五、推理
+# 五、评估
+test_metrics = model.evaluate(test_inputs, test_labels)
+
+# 六、推理
 predictions = model.predict(val_inputs, batch_size=128)
 print(predictions[:10])
