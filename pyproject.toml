@@ -14,6 +14,9 @@ dependencies = [
     "opencv-python>=4.8.1.78",
     "opencv-contrib-python>=4.8.1.78",
     "tensorflow>=2.15.0",
+    "torch>=2.2.1",
+    "torchvision>=0.17.1",
+    "torchaudio>=2.2.1",
 ]
 requires-python = ">=3.9,<3.11"
 readme = "README.md"
