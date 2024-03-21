@@ -167,3 +167,4 @@ dl_data/
 /15_yolo/model/
 /15_yolo/food_project/dataset/images/
 /ultralytics_datasets/
+/runs/

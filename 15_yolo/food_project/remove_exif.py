@@ -27,9 +27,12 @@ def rectify_imgs():
         if not img_name[-4:] == img_type:
             continue
         img_path = os.path.join(path, img_name)
-        img = Image.open(img_path)
-        img_rectified = Image.fromarray(np.asarray(img))  # 将 img 转化为 ndarray，再将该ndarray转化为Image并保存
-        img_rectified.save(img_path)
+        image = Image.open(img_path)
+        # img_rectified = Image.fromarray(np.asarray(img))  # 将 img 转化为 ndarray，再将该ndarray转化为Image并保存
+        data = list(image.getdata())
+        image_without_exif = Image.new(image.mode, image.size)
+        image_without_exif.putdata(data)
+        image_without_exif.save(img_path)
         print(img_name)
 
 
