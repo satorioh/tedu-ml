@@ -19,7 +19,7 @@ import numpy as np
 img_type = '.jpg'
 
 # image folder path
-path = os.path.join(os.getcwd(), '../source/valid')
+path = os.path.join(os.getcwd(), './dataset/images')
 
 
 def rectify_imgs():
