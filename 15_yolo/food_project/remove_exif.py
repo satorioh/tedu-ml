@@ -28,7 +28,7 @@ def rectify_imgs():
             continue
         img_path = os.path.join(path, img_name)
         img = Image.open(img_path)
-        img_rectified = Image.fromarray(np.asarray(img))
+        img_rectified = Image.fromarray(np.asarray(img))  # 将 img 转化为 ndarray，再将该ndarray转化为Image并保存
         img_rectified.save(img_path)
         print(img_name)
 
