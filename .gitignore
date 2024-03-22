@@ -168,3 +168,6 @@ dl_data/
 /15_yolo/food_project/dataset/images/
 /ultralytics_datasets/
 /runs/
+/15_yolo/food_project/dataset/labels/test/
+/15_yolo/food_project/dataset/labels/train/
+/15_yolo/food_project/dataset/labels/val/
